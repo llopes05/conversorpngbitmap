@@ -1,28 +1,31 @@
 import os
 from PIL import Image
 
-# Pastas de entrada e saída
+# Pastas
 pasta_input = "input"
 pasta_output = "output"
 
-# Criar pasta de saída se não existir
+# Garante que a pasta de saída exista
 os.makedirs(pasta_input, exist_ok=True)
 os.makedirs(pasta_output, exist_ok=True)
 
-# Listar todos os arquivos da pasta input
+# Percorre todos os arquivos PNG da pasta de entrada
 for arquivo in os.listdir(pasta_input):
     if arquivo.lower().endswith(".png"):
-        caminho_entrada = os.path.join(pasta_input, arquivo)
-
-        # Abrir e converter imagem
-        imagem = Image.open(caminho_entrada).convert("RGB")
-
-        # Nome do novo arquivo (com extensão .bmp)
         nome_base = os.path.splitext(arquivo)[0]
         caminho_saida = os.path.join(pasta_output, nome_base + ".bmp")
 
-        # Salvar como BMP 24 bits
+        # Verifica se o BMP já existe
+        if os.path.exists(caminho_saida):
+            print(f"Ignorado (já existe): {nome_base}.bmp")
+            continue  # Pula para o próximo arquivo
+
+        # Caminho da imagem de entrada
+        caminho_entrada = os.path.join(pasta_input, arquivo)
+
+        # Abre, converte e salva como BMP
+        imagem = Image.open(caminho_entrada).convert("RGB")
         imagem.save(caminho_saida, format="BMP")
         print(f"Convertido: {arquivo} -> {nome_base}.bmp")
 
-print("Conversão concluída.")
+print("Processo concluído.")
